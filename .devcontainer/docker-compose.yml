@@ -1,0 +1,10 @@
+services:
+  app:
+    build: .
+    image: carreira2
+    container_name: carreira2
+    env_file:
+      - ../.env
+    volumes:
+      - ..:/workspace:cached
+    command: sleep infinity

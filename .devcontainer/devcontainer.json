@@ -1,0 +1,30 @@
+{
+  "name": "Checkpoint 2",
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "vscode",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/uv:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "ms-python.mypy-type-checker",
+        "ms-toolsai.jupyter"
+      ]
+    }
+  },
+  "remoteEnv": {
+    "PROJECT_NAME": "Carreira Alura Python - Checkpoint 2",
+    "PYTHON_VERSION": "3.14",
+    "UV_INIT_BARE": "false",
+    "UV_LINK_MODE":"copy",
+    "INSTALL_IPYKERNEL": "false"
+  },
+  "postCreateCommand": "make post-create",
+  "mounts": []
+}

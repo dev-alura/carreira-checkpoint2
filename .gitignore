@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# Unit test / coverage reports
+.tox/
+.nox/
+.coverage
+.cache
+.pytest_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Environments / Sensitive Data
+.env
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE Specific (Optional - add based on your editor)
+.idea/
+*.swp
+**/*.mypy_cache
+**/*db.sqlite3
