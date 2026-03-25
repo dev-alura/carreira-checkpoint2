@@ -12,9 +12,8 @@
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "charliermarsh.ruff",
-        "ms-python.mypy-type-checker",
-        "ms-toolsai.jupyter"
+        "ms-python.vscode-python-envs",
+        "charliermarsh.ruff"
       ]
     }
   },

@@ -1,0 +1,27 @@
+[run]
+source = clientes,crm_api
+omit =
+    */migrations/*
+    */tests/*
+    */__pycache__/*
+    */venv/*
+    */.venv/*
+    manage.py
+    */asgi.py
+    */wsgi.py
+
+[report]
+precision = 2
+show_missing = True
+skip_covered = False
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if TYPE_CHECKING:
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    @abstractmethod
+
+[html]
+directory = htmlcov

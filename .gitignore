@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
+**/*__pycache__/
 *.py[cod]
 *$py.class
 
@@ -39,3 +39,4 @@ pip-delete-this-directory.txt
 *.swp
 **/*.mypy_cache
 **/*db.sqlite3
+**/*htmlcov

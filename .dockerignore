@@ -1,0 +1,166 @@
+# .dockerignore - Remove arquivos desnecessários da imagem Docker de produção
+
+# ============================================================================
+# ARQUIVOS DE AMBIENTE E CONFIGURAÇÃO LOCAL
+# ============================================================================
+.env
+.env.*
+!.env.production
+.env.local
+.env.development
+.env.test
+.python-version
+
+# ============================================================================
+# BANCO DE DADOS E ARQUIVOS DE DESENVOLVIMENTO
+# ============================================================================
+db.sqlite3
+db.sqlite3-journal
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================================================
+# CONTROLE DE VERSÃO
+# ============================================================================
+.git/
+.gitignore
+.gitattributes
+
+# ============================================================================
+# CACHE PYTHON E ARQUIVOS COMPILADOS
+# ============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.pyc
+*.pyo
+*.pyd
+
+# ============================================================================
+# AMBIENTES VIRTUAIS
+# ============================================================================
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ============================================================================
+# TESTES E COBERTURA
+# ============================================================================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+pytest.ini
+.coveragerc
+run_tests_with_coverage.sh
+clientes/tests/
+*/tests/
+**/test_*.py
+**/tests.py
+
+# ============================================================================
+# DOCUMENTAÇÃO DE DESENVOLVIMENTO
+# ============================================================================
+*.md
+!README.md
+QUICK_TEST_GUIDE.md
+ENV_SETUP_GUIDE.md
+API_AUTH_GUIDE.md
+CORS_GUIDE.md
+PERMISSIONS_GUIDE.md
+TESTING_GUIDE.md
+RELATORIO_TESTES_COVERAGE.md
+docs/
+
+# ============================================================================
+# IDEs E EDITORES
+# ============================================================================
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+.editorconfig
+
+# ============================================================================
+# MYPY E TYPE CHECKING
+# ============================================================================
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# ============================================================================
+# JUPYTER NOTEBOOKS
+# ============================================================================
+.ipynb_checkpoints
+*.ipynb
+
+# ============================================================================
+# LOGS E ARQUIVOS TEMPORÁRIOS
+# ============================================================================
+*.log
+*.pot
+*.pid
+*.seed
+*.pid.lock
+logs/
+tmp/
+temp/
+
+# ============================================================================
+# ARQUIVOS DE DESENVOLVIMENTO
+# ============================================================================
+Makefile
+main.py
+.devcontainer/
+
+# ============================================================================
+# LOCK FILES (manter pyproject.toml, excluir locks se usar pip)
+# ============================================================================
+# uv.lock pode ser incluído se usar uv no Docker
+# Comente a linha abaixo se usar uv run no Dockerfile
+# uv.lock
+
+# ============================================================================
+# ARQUIVOS DE SISTEMA
+# ============================================================================
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ============================================================================
+# ARQUIVOS DE MÍDIA E UPLOADS LOCAIS (não incluir em produção)
+# ============================================================================
+# media/
+# static/
+
+# ============================================================================
+# NOTAS:
+# ============================================================================
+# - Mantenha apenas o necessário para rodar a aplicação em produção
+# - .env.production pode ser incluído se necessário, mas prefira variáveis de ambiente
+# - static/ e media/ devem ser servidos por CDN ou volume persistente
+# - Certifique-se de que pyproject.toml e manage.py estão disponíveis
+# ============================================================================

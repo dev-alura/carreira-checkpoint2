@@ -26,7 +26,14 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.environ.get("DEBUG") == "true" else False
 
-ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOSTS")]
+ENVIROMENT = os.environ.get("ENVIROMENT", "DEVELOP")
+
+# ALLOWED_HOSTS configuration - supports comma-separated values
+ALLOWED_HOSTS = (
+    os.environ.get("ALLOWED_HOSTS", "*").split(",")
+    if os.environ.get("ALLOWED_HOSTS")
+    else ["*"]
+)
 
 # Application definition
 
@@ -37,14 +44,21 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters",
     "rest_framework",
+    "rest_framework.authtoken",
     "djoser",
+    "corsheaders",
+    "drf_yasg",
     "clientes",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # WhiteNoise para servir arquivos estáticos
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "crm_api.middleware.RemoveTrailingSlashMiddleware",  # Aceita URLs com/sem barra
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -53,6 +67,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "crm_api.urls"
+
+# API Configuration - Remove trailing slash requirement
+# Permite URLs com ou sem barra final (mais flexível para APIs)
+APPEND_SLASH = False
 
 TEMPLATES = [
     {
@@ -71,16 +89,66 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "crm_api.wsgi.application"
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissions",
+    ],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
+}
+
+# Configuração do Djoser para controle de acesso
+DJOSER = {
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "SEND_ACTIVATION_EMAIL": False,
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "username/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    "SEND_CONFIRMATION_EMAIL": False,
+    "SERIALIZERS": {},
+    "PERMISSIONS": {
+        "user_create": [
+            "rest_framework.permissions.IsAdminUser"
+        ],  # Só admin cria usuários
+        "user_delete": ["rest_framework.permissions.IsAdminUser"],  # Só admin deleta
+        "user": [
+            "rest_framework.permissions.IsAuthenticated"
+        ],  # Ver usuário: autenticado
+        "user_list": [
+            "rest_framework.permissions.IsAuthenticated"
+        ],  # Listar: autenticado
+        "token_create": ["rest_framework.permissions.AllowAny"],  # Login: público
+        "token_destroy": [
+            "rest_framework.permissions.IsAuthenticated"
+        ],  # Logout: autenticado
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if ENVIROMENT == "TEST":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("DB_NAME"),
+            "USER": os.environ.get("DB_USER"),
+            "PASSWORD": os.environ.get("DB_PASS"),
+            "HOST": os.environ.get("DB_HOST"),
+            "PORT": os.environ.get("DB_PORT"),
+        }
+    }
 
 
 # Password validation
@@ -118,3 +186,96 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# WhiteNoise configuration for production static files serving
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# CORS Configuration
+# https://github.com/adamchainz/django-cors-headers
+
+# Se DEBUG=True e CORS_ALLOWED_ORIGINS não definido, permite qualquer origem
+# Em PRODUÇÃO, SEMPRE defina CORS_ALLOWED_ORIGINS com as origens permitidas
+CORS_ALLOWED_ORIGINS_ENV = os.environ.get("CORS_ALLOWED_ORIGINS", "")
+
+if CORS_ALLOWED_ORIGINS_ENV:
+    # Formato: "http://localhost:3000,https://meuapp.com,https://app.exemplo.com"
+    CORS_ALLOWED_ORIGINS = [
+        origin.strip()
+        for origin in CORS_ALLOWED_ORIGINS_ENV.split(",")
+        if origin.strip()
+    ]
+elif DEBUG:
+    # ⚠️ DESENVOLVIMENTO: Permite todas as origens
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    # 🔒 PRODUÇÃO: Requer configuração explícita
+    CORS_ALLOWED_ORIGINS = []
+
+# Permite cookies e headers de autenticação
+CORS_ALLOW_CREDENTIALS = True
+
+# Headers permitidos nas requisições
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
+# Métodos HTTP permitidos
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": (
+                "JWT Authorization header usando o esquema Bearer.\n\n"
+                "**Como obter o token:**\n"
+                "1. Faça uma requisição POST para `/auth/jwt/create/` com `username` e `password`\n"
+                "2. Copie o token `access` da resposta\n"
+                "3. Digite aqui: `Bearer {seu_token}`\n\n"
+                "Exemplo: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`"
+            ),
+        },
+    },
+    "USE_SESSION_AUTH": False,  # Desabilita botão "django login"
+    "LOGIN_URL": "admin:login",  # Se precisar de login, usar admin
+    "LOGOUT_URL": "admin:logout",
+    "PERSIST_AUTH": True,  # Mantém o token salvo entre recarregamentos da página
+    "REFETCH_SCHEMA_WITH_AUTH": True,  # Recarrega schema ao autenticar
+    "REFETCH_SCHEMA_ON_LOGOUT": True,  # Recarrega schema ao fazer logout
+}
+
+# Silenciar warning de formato de renderização do drf_yasg
+SWAGGER_USE_COMPAT_RENDERERS = False
+
+REDOC_SETTINGS = {
+    "LAZY_RENDERING": False,
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": (
+                "JWT Authorization header usando o esquema Bearer. "
+                "Obtenha o token em `/auth/jwt/create/` e use: `Bearer {token}`"
+            ),
+        },
+    },
+}
