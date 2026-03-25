@@ -1,3 +1,8 @@
+![Python](https://img.shields.io/badge/python-3.14-blue?logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/django-5.1-green?logo=django&logoColor=white)
+![Django REST Framework](https://img.shields.io/badge/djangorestframework-3.15-red?logo=django&logoColor=white)
+![DevContainer](https://img.shields.io/badge/devcontainer-enabled-blue?logo=visualstudiocode&logoColor=white)
+
 # Projeto: Gerenciador de Relacionamento com Clientes
 
 Você chegou a um novo momento da sua jornada! Agora é hora de aplicar, de forma integrada, os conhecimentos que vem construindo até aqui em um desafio mais completo e realista, com foco na atuação de pessoas desenvolvedoras back-end em times profissionais.  
