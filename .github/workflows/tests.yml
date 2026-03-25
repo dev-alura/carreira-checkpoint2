@@ -1,0 +1,64 @@
+name: Tests and Coverage
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python 3.14
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.14'
+    
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+    
+    - name: Install dependencies
+      run: |
+        uv sync --all-groups
+    
+    - name: Run tests with coverage
+      env:
+        SECRET_KEY: "test-secret-key-for-ci"
+        DEBUG: "True"
+        ENVIROMENT: "TEST"
+        ALLOWED_HOSTS: "*"
+        CORS_ALLOWED_ORIGINS_ENV: '["http://localhost:8000"]'
+      run: |
+        uv run coverage run --source='clientes,crm_api' -m pytest clientes/tests -v
+        uv run coverage report -m
+        uv run coverage html
+        uv run coverage xml
+    
+    - name: Upload coverage report (HTML)
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report-html
+        path: htmlcov/
+    
+    - name: Upload coverage report (XML)
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report-xml
+        path: coverage.xml
+    
+    - name: Coverage comment
+      if: github.event_name == 'pull_request'
+      run: |
+        echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        uv run coverage report -m >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY

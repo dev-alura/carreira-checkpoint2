@@ -95,9 +95,9 @@ Passos exigidos pelo desafio da entrega serão anotados aqui !
  - [x] Garantir que o container esteja exposto na porta correta e conectado ao banco.
  - [x] Permitir que o container seja iniciado com um único comando, como docker-compose up.
  - [x] Configurar o container para rodar migrações automaticamente na inicialização.
- - [ ] Criar um workflow de GitHub Actions que:
-   - [ ] Rode os testes automatizados a cada push/pull request.
-   - [ ] Gere relatório de cobertura de testes.
+ - [x] Criar um workflow de GitHub Actions que:
+   - [x] Rode os testes automatizados a cada push/pull request.
+   - [x] Gere relatório de cobertura de testes.
    - [x] Construa a imagem Docker da aplicação.
  - [x] Utilizar um .dockerignore para evitar copiar arquivos desnecessários para dentro da imagem.
 
