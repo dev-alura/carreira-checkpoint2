@@ -1,0 +1,35 @@
+# Codecov Configuration
+# Documentação: https://docs.codecov.com/docs/codecov-yaml
+
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+  
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 1%
+    patch:
+      default:
+        target: 80%
+
+comment:
+  layout: "reach,diff,flags,files,footer"
+  behavior: default
+  require_changes: false
+
+ignore:
+  - "*/tests/*"
+  - "*/test_*.py"
+  - "*/migrations/*"
+  - "manage.py"
+  - "*/admin.py"
+  - "*/apps.py"
+  - "*/wsgi.py"
+  - "*/asgi.py"
+  - "htmlcov/*"
+  - "staticfiles/*"
+  - ".venv/*"
+  - "*/conftest.py"

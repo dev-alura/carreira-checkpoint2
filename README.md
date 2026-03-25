@@ -2,6 +2,9 @@
 ![Django](https://img.shields.io/badge/django-5.1-green?logo=django&logoColor=white)
 ![Django REST Framework](https://img.shields.io/badge/djangorestframework-3.15-red?logo=django&logoColor=white)
 ![DevContainer](https://img.shields.io/badge/devcontainer-enabled-blue?logo=visualstudiocode&logoColor=white)
+![Tests](https://img.shields.io/github/actions/workflow/status/<seu-usuario>/<nome-repo>/tests.yml?branch=main&label=tests&logo=github)
+![Codecov](https://codecov.io/gh/<seu-usuario>/<nome-repo>/branch/main/graph/badge.svg)
+![Docker](https://img.shields.io/badge/docker-ghcr.io-2496ED?logo=docker&logoColor=white)
 
 # Projeto: Gerenciador de Relacionamento com Clientes
 
@@ -17,6 +20,10 @@ Neste projeto, você será responsável por desenvolver um sistema de CRM (Custo
    - Siga o exemplo do .env_examples e coloque o ENVIROMENT em test para não usar o postgres 
    - Execute: ./entrypoint_dev.sh assim que carregar o devcontainer 
    - Projeto tem Documentação do projeto [Swagger/Redocs](http://localhost:8000/swagger)
+ - CI/CD
+   - GitHub Actions - Testes automatizados e build de imagens
+   - [Codecov](docs/CODECOV.md) - Relatórios de cobertura de testes
+   - [GitHub Container Registry](docs/GITHUB_CONTAINER_REGISTRY.md) - Publicação automática de imagens Docker
 
 ## Etapas:
 
@@ -102,9 +109,14 @@ Passos exigidos pelo desafio da entrega serão anotados aqui !
  - [x] Utilizar um .dockerignore para evitar copiar arquivos desnecessários para dentro da imagem.
 
 ## Comandos
-```
+```bash
 # Cobertura
 uv run coverage run --source='clientes,crm_api' -m pytest clientes/tests -v
 
+# Rodar container local
 docker run -it -p 8000:8000 -e DEBUG="False" -e CORS_ALLOWED_ORIGINS_ENV='["http://localhost:8000"]' -e SECRET_KEY="django-insecure-p_%^w*s2z3&toghdkwig=a)7#&0p-%r(76yf(mhv#b-gnxg!=*" -e ALLOWED_HOSTS="*" crm-api:latest
+
+# Rodar container do GitHub Container Registry (após publicação)
+# docker pull ghcr.io/<seu-usuario>/<nome-repo>:latest
+# docker run -it -p 8000:8000 -e DEBUG="False" -e CORS_ALLOWED_ORIGINS_ENV='["http://localhost:8000"]' -e SECRET_KEY="django-insecure-p_%^w*s2z3&toghdkwig=a)7#&0p-%r(76yf(mhv#b-gnxg!=*" -e ALLOWED_HOSTS="*" ghcr.io/<seu-usuario>/<nome-repo>:latest
 ```
